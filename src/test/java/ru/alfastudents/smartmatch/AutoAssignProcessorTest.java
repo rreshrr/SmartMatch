@@ -29,7 +29,7 @@ class AutoAssignProcessorTest {
     @Autowired
     private AutoAssignCaseRepository autoAssignCaseRepository;
 
-    private final String TEST_RESOURCES_DIRECTORY = "/home/andreyoskin/IdeaProjects/SmartMatch/SmartMatch/src/test/resources"
+    private final String TEST_RESOURCES_DIRECTORY = "/home/andreyoskin/IdeaProjects/SmartMatch/SmartMatch/src/test/resources";
     @BeforeEach
     public void clearSource(){
         dwhHelper.setSourceFilePath(null);
