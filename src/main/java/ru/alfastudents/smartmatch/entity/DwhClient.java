@@ -1,4 +1,4 @@
-package ru.alfastudents.smartmatch;
+package ru.alfastudents.smartmatch.entity;
 
 import jakarta.persistence.*;
 

@@ -1,25 +1,29 @@
 package ru.alfastudents.smartmatch.helper;
 
-import org.springframework.stereotype.Component;
-import ru.alfastudents.smartmatch.Client;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
+import ru.alfastudents.smartmatch.dto.Client;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
-@Component
+@Service
 public class DwhHelper extends BaseHelper {
 
-    public List<Client> getClientsForAutoAsignee() {
-        List<Client> clients = new ArrayList<>();
-        String filename = "/dwh_clients.csv";
+    @Value("${app.path-to-csv}/dwh_clients.csv")
+    private String defaultFilePath;
 
-        Scanner scanner = getScannerFromFileCsv(filename);
+    public List<Client> getClientsForAutoAsignee() {
+
+        List<Client> clients = new ArrayList<>();
+
+        Scanner scanner = getScannerFromFileCsv(getSourceFilePath());
 
         while (scanner.hasNextLine()) {
             clients.add(getClientFromLine(scanner.nextLine()));
         }
-
+        scanner.close();
         return clients;
     }
 
@@ -28,4 +32,8 @@ public class DwhHelper extends BaseHelper {
         return new Client(values[0], values[1], values[2], values[3]);
     }
 
+    @Override
+    protected String getSourceFilePath() {
+        return sourceFilePath == null ? defaultFilePath : sourceFilePath;
+    }
 }

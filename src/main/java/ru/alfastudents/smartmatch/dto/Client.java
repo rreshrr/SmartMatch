@@ -1,4 +1,4 @@
-package ru.alfastudents.smartmatch;
+package ru.alfastudents.smartmatch.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
