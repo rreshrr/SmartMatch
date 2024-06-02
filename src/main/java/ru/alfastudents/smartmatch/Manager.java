@@ -29,4 +29,11 @@ public class Manager {
 
     private final String email;
 
+    public Boolean isOrdinary(){
+        return grade.equals("Ordinary");
+    }
+
+    public Boolean isMajor(){
+        return grade.equals("Major");
+    }
 }

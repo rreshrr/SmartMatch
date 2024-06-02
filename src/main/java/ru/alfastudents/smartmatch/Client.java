@@ -3,13 +3,11 @@ package ru.alfastudents.smartmatch;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
-import java.util.UUID;
-
 @AllArgsConstructor
 @Getter
 public class Client {
 
-    private UUID id;
+    private String id;
 
     private String grade;
 
@@ -23,5 +21,9 @@ public class Client {
 
     public boolean isOrdinary(){
         return grade.equals("Ordinary");
+    }
+
+    public Boolean isMajor(){
+        return grade.equals("Major");
     }
 }
