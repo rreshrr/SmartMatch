@@ -7,7 +7,6 @@ import org.springframework.stereotype.Component;
 import ru.alfastudents.smartmatch.dto.Client;
 import ru.alfastudents.smartmatch.dto.Manager;
 import ru.alfastudents.smartmatch.service.AutoAssigneService;
-
 import java.util.List;
 
 @RequiredArgsConstructor

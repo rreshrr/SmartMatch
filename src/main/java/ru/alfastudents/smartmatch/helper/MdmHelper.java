@@ -3,7 +3,6 @@ package ru.alfastudents.smartmatch.helper;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import ru.alfastudents.smartmatch.dto.Manager;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -17,11 +16,11 @@ public class MdmHelper extends BaseHelper {
     public List<Manager> findManagersByRegionAndType(String region, String type) {
         List<Manager> managers = new ArrayList<>();
 
-        Scanner scanner = getScannerFromFileCsv(getSourceFilePath());
+        Scanner scanner = getScannerWithCsvContent();
 
         while (scanner.hasNextLine()) {
             Manager tempManager = getManagerFromLine(scanner.nextLine());
-            if (tempManager.getRegion().equals(region) && tempManager.getType().equals(type))
+            if (tempManager.getRegion().equalsIgnoreCase(region) && tempManager.getType().equalsIgnoreCase(type))
                 managers.add(tempManager);
         }
         scanner.close();
@@ -31,7 +30,7 @@ public class MdmHelper extends BaseHelper {
     public List<Manager> findManagersByIds(List<String> ids){
         List<Manager> managers = new ArrayList<>();
 
-        Scanner scanner = getScannerFromFileCsv(getSourceFilePath());
+        Scanner scanner = getScannerWithCsvContent();
 
         while (scanner.hasNextLine()) {
             Manager tempManager = getManagerFromLine(scanner.nextLine());
@@ -49,7 +48,11 @@ public class MdmHelper extends BaseHelper {
     }
 
     @Override
-    protected String getSourceFilePath() {
-        return sourceFilePath == null ? defaultFilePath : sourceFilePath;
+    protected Scanner getScannerWithCsvContent() {
+        if (resourceFilePath == null){
+            return getScannerFromFileCsv(defaultFilePath);
+        } else {
+            return getScannerFromResourceFileCsv(resourceFilePath);
+        }
     }
 }

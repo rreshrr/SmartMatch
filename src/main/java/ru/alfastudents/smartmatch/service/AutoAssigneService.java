@@ -10,7 +10,6 @@ import ru.alfastudents.smartmatch.helper.DwhHelper;
 import ru.alfastudents.smartmatch.helper.MdmHelper;
 import ru.alfastudents.smartmatch.helper.SapHelper;
 import ru.alfastudents.smartmatch.repository.AutoAssignCaseRepository;
-
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -61,6 +60,6 @@ public class AutoAssigneService {
     }
 
     public Boolean isSameGrade(Manager manager, Client client){
-        return manager.getGrade().equals(client.getGrade());
+        return manager.getGrade().equalsIgnoreCase(client.getGrade());
     }
 }

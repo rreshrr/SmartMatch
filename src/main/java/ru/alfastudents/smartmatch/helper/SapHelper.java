@@ -3,7 +3,6 @@ package ru.alfastudents.smartmatch.helper;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import ru.alfastudents.smartmatch.dto.Manager;
-
 import java.util.Scanner;
 
 @Service
@@ -14,15 +13,15 @@ public class SapHelper extends BaseHelper {
 
     public void updateManager(Manager manager){
         String[] values = getAdditionalManagerInfo(manager.getId());
-        manager.setIsSick(Boolean.valueOf(values[1]));
         manager.setIsVacation(Boolean.valueOf(values[1]));
+        manager.setIsSick(Boolean.valueOf(values[2]));
     }
 
     private String[] getAdditionalManagerInfo(String managerId){
 
         String[] result = null;
 
-        Scanner scanner = getScannerFromFileCsv(getSourceFilePath());
+        Scanner scanner = getScannerWithCsvContent();
 
         while (scanner.hasNextLine()) {
             String[] values = scanner.nextLine().split(COMMA_DELIMITER);
@@ -34,8 +33,12 @@ public class SapHelper extends BaseHelper {
     }
 
     @Override
-    protected String getSourceFilePath() {
-        return sourceFilePath == null ? defaultFilePath : sourceFilePath;
+    protected Scanner getScannerWithCsvContent() {
+        if (resourceFilePath == null){
+            return getScannerFromFileCsv(defaultFilePath);
+        } else {
+            return getScannerFromResourceFileCsv(resourceFilePath);
+        }
     }
 
 }

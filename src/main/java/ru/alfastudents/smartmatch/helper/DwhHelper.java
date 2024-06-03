@@ -3,7 +3,6 @@ package ru.alfastudents.smartmatch.helper;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import ru.alfastudents.smartmatch.dto.Client;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -18,11 +17,12 @@ public class DwhHelper extends BaseHelper {
 
         List<Client> clients = new ArrayList<>();
 
-        Scanner scanner = getScannerFromFileCsv(getSourceFilePath());
+        Scanner scanner = getScannerWithCsvContent();
 
         while (scanner.hasNextLine()) {
             clients.add(getClientFromLine(scanner.nextLine()));
         }
+
         scanner.close();
         return clients;
     }
@@ -33,7 +33,11 @@ public class DwhHelper extends BaseHelper {
     }
 
     @Override
-    protected String getSourceFilePath() {
-        return sourceFilePath == null ? defaultFilePath : sourceFilePath;
+    protected Scanner getScannerWithCsvContent() {
+        if (resourceFilePath == null){
+            return getScannerFromFileCsv(defaultFilePath);
+        } else {
+            return getScannerFromResourceFileCsv(resourceFilePath);
+        }
     }
 }

@@ -29,10 +29,10 @@ public class Manager {
     private final String email;
 
     public Boolean isOrdinary(){
-        return grade.equals("Ordinary");
+        return grade.equalsIgnoreCase("ordinary");
     }
 
     public Boolean isMajor(){
-        return grade.equals("Major");
+        return grade.equalsIgnoreCase("major");
     }
 }

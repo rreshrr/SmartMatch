@@ -16,14 +16,14 @@ public class Client {
     private String region;
 
     public boolean isDigital(){
-        return type.equals("Digital");
+        return type.equalsIgnoreCase("Digital");
     }
 
     public boolean isOrdinary(){
-        return grade.equals("Ordinary");
+        return grade.equalsIgnoreCase("Ordinary");
     }
 
     public Boolean isMajor(){
-        return grade.equals("Major");
+        return grade.equalsIgnoreCase("Major");
     }
 }
