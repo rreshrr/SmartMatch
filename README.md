@@ -29,7 +29,8 @@ _ref: [Техническое задание](https://docs.google.com/document/d
        Если сидите на Windows, то обязательно экранируйте слеши, должно получиться что-то вроде: `C:\\Users\\Lala\\Dada\\src\\...`
  
    4.2. В настройке `spring.mail.password` заменить пароль от почтового ящика на актуальный (спросить у меня).
-   4.3. В настройках `spring.datasource.username` и `spring.datasource.password` установить значения логина и пароля мастер-юзера БД. (если оставляли по умолчанию, то можно не менять).
+  
+    4.3. В настройках `spring.datasource.username` и `spring.datasource.password` установить значения логина и пароля мастер-юзера БД. (если оставляли по умолчанию, то можно не менять).
 5. Отыскать в дереве файлов главный java-класс: `src/main/java/ru/alfastudents/smartmatch/SmartMatchApplication.java`
 6. Запустить приложение `Run` -> `Run 'SmartMatchApplication'`.
 7. Дождаться 21:00... Или открыть браузер, и перейти по адресу http://localhost:8080/autoassign/start - переход по ссылке запустит процесс.
