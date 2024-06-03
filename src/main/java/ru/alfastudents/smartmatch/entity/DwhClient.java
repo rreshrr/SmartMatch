@@ -16,10 +16,10 @@ public class DwhClient {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    @Column(name = "client_grade", nullable = false, updatable = true)
+    @Column(name = "grade", nullable = false, updatable = true)
     private String clientGrade;
 
-    @Column(name = "client_type", nullable = false, updatable = true)
+    @Column(name = "type", nullable = false, updatable = true)
     private String clientType;
 
     @Column(name = "region_fias", nullable = false, updatable = true)

@@ -16,17 +16,17 @@ import java.util.UUID;
 @NoArgsConstructor
 @Entity
 @Getter
-@Table(name="autoassignes", schema = "smartmatch")
+@Table(name="autoassignecases", schema = "smartmatch")
 public class AutoAssignCase {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    @Column(name = "client_id", nullable = false, updatable = false)
+    @Column(name = "id_client", nullable = false, updatable = false)
     private String clientId;
 
-    @Column(name = "manager_id", nullable = false, updatable = false)
+    @Column(name = "id_manager", nullable = false, updatable = false)
     private String managerId;
 
     @CreationTimestamp

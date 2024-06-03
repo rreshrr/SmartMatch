@@ -1,0 +1,24 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+		https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.9.xsd">
+
+    <changeSet id="Create table for autoassign cases" author="Oskin Andrey">
+        <createTable tableName="autoassignecases" schemaName="smartmatch">
+            <column name="id" type="uuid">
+                <constraints primaryKey="true" primaryKeyName="id_autoassignecases_pk"/>
+            </column>
+            <column name="id_client" type="varchar(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="id_manager" type="varchar(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_at" type="datetime">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+</databaseChangeLog>
