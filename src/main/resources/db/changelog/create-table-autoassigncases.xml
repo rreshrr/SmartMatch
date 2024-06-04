@@ -12,9 +12,12 @@
             <column name="id_client" type="varchar(64)">
                 <constraints nullable="false"/>
             </column>
-            <column name="id_manager" type="varchar(64)">
-                <constraints nullable="false"/>
-            </column>
+            <column name="id_manager" type="varchar(64)"/>
+            <column name="client_region" type="varchar(64)"/>
+            <column name="client_name" type="varchar(64)"/>
+            <column name="client_type" type="varchar(64)"/>
+            <column name="manager_name" type="varchar(64)"/>
+            <column name="error" type="varchar(64)"/>
             <column name="created_at" type="datetime">
                 <constraints nullable="false"/>
             </column>

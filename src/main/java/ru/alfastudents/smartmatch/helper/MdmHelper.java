@@ -44,7 +44,7 @@ public class MdmHelper extends BaseHelper {
 
     private Manager getManagerFromLine(String line) {
         String[] values = line.split(COMMA_DELIMITER);
-        return new Manager(values[0], values[1], values[2], Boolean.valueOf(values[3]), Integer.valueOf(values[4]), values[5], values[6]);
+        return new Manager(values[0], values[1],  values[2], values[3], Boolean.valueOf(values[4]), Integer.valueOf(values[5]), values[6], values[7]);
     }
 
     @Override

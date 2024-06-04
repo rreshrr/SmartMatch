@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
-import ru.alfastudents.smartmatch.AutoAssignProcessor;
+import ru.alfastudents.smartmatch.processor.AutoAssignProcessor;
 import ru.alfastudents.smartmatch.entity.AutoAssignCase;
 import ru.alfastudents.smartmatch.repository.AutoAssignCaseRepository;
 

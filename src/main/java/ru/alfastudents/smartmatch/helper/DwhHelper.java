@@ -29,7 +29,7 @@ public class DwhHelper extends BaseHelper {
 
     private Client getClientFromLine(String line) {
         String[] values = line.split(COMMA_DELIMITER);
-        return new Client(values[0], values[1], values[2], values[3]);
+        return new Client(values[0], values[1], values[2], values[3], values[4]);
     }
 
     @Override

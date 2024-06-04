@@ -1,29 +1,31 @@
 package ru.alfastudents.smartmatch.dto;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 
-@AllArgsConstructor
+@RequiredArgsConstructor
 @Getter
 public class Client {
 
-    private String id;
+    private final String id;
 
-    private String grade;
+    private final String grade;
 
-    private String type;
+    private final String type;
 
-    private String region;
+    private final String region;
+
+    private final String name;
 
     public boolean isDigital(){
-        return type.equalsIgnoreCase("Digital");
+        return type.equalsIgnoreCase("digital");
     }
 
     public boolean isOrdinary(){
-        return grade.equalsIgnoreCase("Ordinary");
+        return grade.equalsIgnoreCase("ordinary");
     }
 
     public Boolean isMajor(){
-        return grade.equalsIgnoreCase("Major");
+        return grade.equalsIgnoreCase("major");
     }
 }

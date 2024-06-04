@@ -4,11 +4,14 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import ru.alfastudents.smartmatch.entity.AutoAssignCase;
 import ru.alfastudents.smartmatch.helper.DwhHelper;
 import ru.alfastudents.smartmatch.helper.MdmHelper;
 import ru.alfastudents.smartmatch.helper.SapHelper;
+import ru.alfastudents.smartmatch.processor.AutoAssignProcessor;
 import ru.alfastudents.smartmatch.repository.AutoAssignCaseRepository;
 
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @SpringBootTest
@@ -48,15 +51,29 @@ class AutoAssignProcessorTest {
         changeSource("/email-send");
         autoAssignProcessor.process();
 
-        assertEquals(4, autoAssignCaseRepository.findAll().size());
+        assertEquals(5, autoAssignCaseRepository.findAll().size());
 
         assertEquals("2", autoAssignCaseRepository.findByManagerId("DVDOMGT8").get(0).getClientId());
 
-        assertEquals("3", autoAssignCaseRepository.findByManagerId("DY9HHAU5").get(0).getClientId());
+        String[] actual = autoAssignCaseRepository.findByManagerId("DY9HHAU5")
+                .stream()
+                .map(AutoAssignCase::getClientId)
+                .sorted()
+                .toArray(String[]::new);
 
-        assertEquals("4", autoAssignCaseRepository.findByManagerId("DY9HHAU5").get(1).getClientId());
+        String[] expected = {"3", "4"};
+        assertArrayEquals(expected, actual);
 
         assertEquals("5", autoAssignCaseRepository.findByManagerId("ANDREY").get(0).getClientId());
+
+    }
+
+    @Test
+    public void testParallelProcessing(){
+        changeSource("/parallel-processing");
+        autoAssignProcessor.process();
+
+        assertEquals(12, autoAssignCaseRepository.findAll().size());
 
     }
 
@@ -65,7 +82,7 @@ class AutoAssignProcessorTest {
         changeSource("/happy-path");
         autoAssignProcessor.process();
 
-        assertEquals(3, autoAssignCaseRepository.findAll().size());
+        assertEquals(4, autoAssignCaseRepository.findAll().size());
     }
 
     @Test
@@ -73,7 +90,7 @@ class AutoAssignProcessorTest {
         changeSource("/different-grade");
         autoAssignProcessor.process();
 
-        assertEquals(3, autoAssignCaseRepository.findAll().size());
+        assertEquals(4, autoAssignCaseRepository.findAll().size());
     }
 
     @Test
