@@ -44,8 +44,8 @@ class AutoAssignProcessorTest {
     }
 
     @Test
-    public void testBasicAutoAssign(){
-        changeSource("/basic-auto-assign");
+    public void testEmailSend(){
+        changeSource("/email-send");
         autoAssignProcessor.process();
 
         assertEquals(4, autoAssignCaseRepository.findAll().size());
@@ -65,7 +65,7 @@ class AutoAssignProcessorTest {
         changeSource("/happy-path");
         autoAssignProcessor.process();
 
-        assertEquals(4, autoAssignCaseRepository.findAll().size());
+        assertEquals(3, autoAssignCaseRepository.findAll().size());
     }
 
     @Test
@@ -73,7 +73,7 @@ class AutoAssignProcessorTest {
         changeSource("/different-grade");
         autoAssignProcessor.process();
 
-        assertEquals(4, autoAssignCaseRepository.findAll().size());
+        assertEquals(3, autoAssignCaseRepository.findAll().size());
     }
 
     @Test

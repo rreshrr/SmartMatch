@@ -1,0 +1,27 @@
+version: '3'
+services:
+  app:
+    container_name: 'smartmatch'
+    image: 'rreshrr/smartmatch:stable'
+    build: ./
+    volumes:
+      - /home/andreyoskin/Documents/resources:/app/external-system-data
+    ports:
+      - 8085:8080
+    depends_on:
+      - postgres
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/postgres
+      - SPRING_DATASOURCE_USERNAME=data
+      - SPRING_DATASOURCE_PASSWORD=data
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=none
+      - APP_EMAIL_PASSWORD=ewpgvrfmhnqhsacy
+      - APP_PATH_TO_CSV=/app/external-system-data
+  postgres:
+    image: 'postgres:13.1-alpine'
+    container_name: 'postgresql-db'
+    ports:
+      - 5444:5432
+    environment:
+      - POSTGRES_PASSWORD=data
+      - POSTGRES_USER=data
