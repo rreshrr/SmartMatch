@@ -36,5 +36,46 @@ _ref: [Техническое задание](https://docs.google.com/document/d
 7. Дождаться 21:00... Или открыть браузер, и перейти по адресу http://localhost:8080/autoassign/start - переход по ссылке запустит процесс.
 8. Если появилась надпись "AutoAssignProcess finished", то всё ок. Можно идти смотреть через pgAdmin на таблицу `autoassigncases` внутри схемы `smartmatch`. Внутри таблицы должны лежать все закрепления, на основе данных из файлов-заглушек.    
 
-#### II. Через Docker
- //to-do
+#### II. Через Docker (рекомендуемый!)
+ 1. Скачать и установить Docker Desktop (инструкция - https://docs.docker.com/desktop/install/windows-install/)
+2. Создать на пк папку тестовую, в неё поместить файл `docker-compose.yaml` (скачать из репозитория) + создать папку, где будут лежать файлы-заглушки (`dwh_clients.csv`, `mdm_managers.csv`, `sap_managers.csv`, их можно скачать из репозитория `src/main/resources/`)
+3. Поправить docker-compose.yaml:
+
+3.1. Изменить свойство `volumes`:
+```yaml
+volumes:
+    - /путь/до/папки/c/заглушками:/app/external-system-data #для linux/mac
+    
+    - C:\\путь\\до\\папки\\с\\заглушками:/app/external-system-data #для windows
+```
+3.2. В свойстве APP_EMAIL_PASSWORD указать актуальный пароль (спросить у меня)
+
+```yaml
+    - APP_EMAIL_PASSWORD=secretpass
+```
+
+3.3. В свойстве APP_EMAIL_WHITE_LIST можно добавить почтовые ящики, которым разрешено отправлять письма.
+
+4. Запустить контейнер
+
+4.1. Открыть терминал/командную строку в папке с `docker-compose.yaml`
+
+4.2. Выполнить команду
+```shell
+docker compose up
+```
+4.3. Дождаться пока все скачается, запуститься, инициализируется...
+Финальной строкой должно быть что-то вроде:
+```shell
+smartmatch  | ... : Completed initialization in 2ms
+```
+5. Запустить сам процесс - перейти в браузере по ссылке http://localhost:8085/autoassign/start. Если вывелось "AutoAssignProcess finished", то все ок.
+
+Полезные ссылочки: 
+- http://localhost:8085/autoassign - получить JSON со всеми закреплениями из локальной БД.
+- http://localhost:8085/autoassign/clear - очистить локальную БД с результатами закреплений.
+
+Каждый запуск http://localhost:8085/autoassign/start берет данные из ваших файлов и пытается выполнить закрепление.
+
+Каждый запуск контейнера создает с 0 БД, поэтому данные не сохранятся.
+
