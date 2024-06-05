@@ -7,7 +7,7 @@ services:
     volumes:
       - /home/andreyoskin/Documents/resources:/app/external-system-data
     ports:
-      - 8085:8080
+      - 8080:8080
     depends_on:
       - postgres
     environment:
@@ -26,3 +26,11 @@ services:
     environment:
       - POSTGRES_PASSWORD=data
       - POSTGRES_USER=data
+  dashboard:
+    container_name: 'smartmatchfront'
+    image: 'rreshrr/smartmatchfront:stable'
+    build: ./
+    ports:
+      - 5000:5000
+    depends_on:
+      - app

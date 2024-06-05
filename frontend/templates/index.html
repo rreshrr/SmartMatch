@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Результаты закреплений</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        h1 {
+            text-align: center;
+        }
+        .filter-container {
+            margin-bottom: 20px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: center;
+        }
+        .filter-label {
+            margin-right: 10px;
+            font-weight: bold;
+        }
+        .filter-select {
+            padding: 5px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        table, th, td {
+            border: 1px solid #ddd;
+        }
+        th, td {
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+            font-weight: bold;
+        }
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        tr:hover {
+            background-color: #f1f1f1;
+        }
+    </style>
+</head>
+<body>
+    <h1>Результаты автоматического закрепления</h1>
+    <div class="filter-container">
+        <div>
+            <span class="filter-label">Клиент закреплен:</span>
+            <select id="clientAssignedFilter" class="filter-select">
+                <option value="all">Все</option>
+                <option value="yes">Да</option>
+                <option value="no">Нет</option>
+            </select>
+        </div>
+        <div>
+            <span class="filter-label">Название ошибки:</span>
+            <select id="errorNameFilter" class="filter-select">
+                <option value="all">Все</option>
+            </select>
+        </div>
+        <div>
+            <span class="filter-label">Имя клиента:</span>
+            <select id="clientNameFilter" class="filter-select">
+                <option value="all">Все</option>
+            </select>
+        </div>
+        <div>
+            <span class="filter-label">Имя менеджера:</span>
+            <select id="managerNameFilter" class="filter-select">
+                <option value="all">Все</option>
+            </select>
+        </div>
+        <div>
+            <span class="filter-label">Тип клиента:</span>
+            <select id="clentTypeFilter" class="filter-select">
+                <option value="all">Все</option>
+            </select>
+        </div>
+        <div>
+            <span class="filter-label">Регион клиента:</span>
+            <select id="clientRegionFilter" class="filter-select">
+                <option value="all">Все</option>
+            </select>
+        </div>
+    </div>
+    
+    <table>
+        <thead>
+            <tr>
+                <th>ID записи</th>
+                <th>ID клиента</th>
+                <th>Имя клиента</th>
+                <th>Тип клиента</th>
+                <th>Регион клиента</th>
+                <th>ID менеджера</th>
+                <th>Имя менеджера</th>
+                <th>Время закрепления</th>
+                <th>Информация об ошибке</th>
+                <th>Клиент закреплен</th>
+            </tr>
+        </thead>
+        <tbody id="data-table-body">
+            <!-- Данные будут добавлены здесь через JavaScript -->
+        </tbody>
+    </table>
+    
+    <script>
+        $(document).ready(function() {
+            $.getJSON('/data', function(data) {
+                var tableBody = $('#data-table-body');
+                var clientNames = new Set();
+                var managerNames = new Set();
+                var clentTypes = new Set();
+                var clientRegions = new Set();
+                var errorNames = new Set();
+                
+                function renderTable(filteredData) {
+                    tableBody.empty();
+                    filteredData.forEach(function(item) {
+                        var row = $('<tr></tr>');
+                        row.append($('<td></td>').text(item.id));
+                        row.append($('<td></td>').text(item.clientId));
+                        row.append($('<td></td>').text(item.clientName));
+                        row.append($('<td></td>').text(item.clentType));
+                        row.append($('<td></td>').text(item.clientRegion));
+                        row.append($('<td></td>').text(item.managerId));
+                        row.append($('<td></td>').text(item.managerName));
+                        
+                        var date = new Date(item.createdAt);
+                        var formattedDate = date.toLocaleString("ru-RU");
+                        row.append($('<td></td>').text(formattedDate));
+                        
+                        row.append($('<td></td>').text(item.errorInfo || ''));
+                        row.append($('<td></td>').text(item.errorInfo ? 'Нет' : 'Да'));
+                        tableBody.append(row);
+                    });
+                }
+                
+                function applyFilters() {
+                    var clientAssignedFilter = $('#clientAssignedFilter').val();
+                    var errorNameFilter = $('#errorNameFilter').val();
+                    var clientNameFilter = $('#clientNameFilter').val();
+                    var managerNameFilter = $('#managerNameFilter').val();
+                    var clentTypeFilter = $('#clentTypeFilter').val();
+                    var clientRegionFilter = $('#clientRegionFilter').val();
+                    
+                    var filteredData = data.filter(function(item) {
+                        var clientAssignedCondition = true;
+                        var errorNameCondition = true;
+                        var clientNameCondition = true;
+                        var managerNameCondition = true;
+                        var clentTypeCondition = true;
+                        var clientRegionCondition = true;
+                        
+                        if (clientAssignedFilter === 'yes') {
+                            clientAssignedCondition = !item.errorInfo;
+                        } else if (clientAssignedFilter === 'no') {
+                            clientAssignedCondition = !!item.errorInfo;
+                        }
+                        
+                        if (errorNameFilter !== 'all') {
+                            errorNameCondition = item.errorInfo === errorNameFilter;
+                        }
+                        
+                        if (clientNameFilter !== 'all') {
+                            clientNameCondition = item.clientName === clientNameFilter;
+                        }
+                        
+                        if (managerNameFilter !== 'all') {
+                            managerNameCondition = item.managerName === managerNameFilter;
+                        }
+                        
+                        if (clentTypeFilter !== 'all') {
+                            clentTypeCondition = item.clentType === clentTypeFilter;
+                        }
+                        
+                        if (clientRegionFilter !== 'all') {
+                            clientRegionCondition = item.clientRegion === clientRegionFilter;
+                        }
+                        
+                        return clientAssignedCondition && errorNameCondition &&
+                               clientNameCondition && managerNameCondition &&
+                               clentTypeCondition && clientRegionCondition;
+                    });
+                    
+                    renderTable(filteredData);
+                }
+                
+                // Инициализация таблицы и фильтров
+                data.forEach(function(item) {
+                    if (item.clientName) clientNames.add(item.clientName);
+                    if (item.managerName) managerNames.add(item.managerName);
+                    if (item.clentType) clentTypes.add(item.clentType);
+                    if (item.clientRegion) clientRegions.add(item.clientRegion);
+                    if (item.errorInfo) errorNames.add(item.errorInfo);
+                });
+                
+                clientNames.forEach(function(name) {
+                    $('#clientNameFilter').append($('<option></option>').attr('value', name).text(name));
+                });
+                
+                managerNames.forEach(function(name) {
+                    $('#managerNameFilter').append($('<option></option>').attr('value', name).text(name));
+                });
+                
+                clentTypes.forEach(function(type) {
+                    $('#clentTypeFilter').append($('<option></option>').attr('value', type).text(type));
+                });
+                
+                clientRegions.forEach(function(region) {
+                    $('#clientRegionFilter').append($('<option></option>').attr('value', region).text(region));
+                });
+                
+                errorNames.forEach(function(error) {
+                    $('#errorNameFilter').append($('<option></option>').attr('value', error).text(error));
+                });
+                
+                $('.filter-select').change(applyFilters);
+                
+                renderTable(data); // первоначальный рендеринг таблицы
+            });
+        });
+    </script>
+</body>
+</html>
+
