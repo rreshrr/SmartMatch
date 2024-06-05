@@ -15,7 +15,7 @@ services:
       - SPRING_DATASOURCE_USERNAME=data
       - SPRING_DATASOURCE_PASSWORD=data
       - SPRING_JPA_HIBERNATE_DDL_AUTO=none
-      - APP_EMAIL_PASSWORD=ygitsxtqzdqawoop
+      - APP_EMAIL_PASSWORD=xxxx
       - APP_EMAIL_WHITE_LIST=rreshrr@gmail.com,smsmartmatch@gmail.com,admin@example.com
       - APP_PATH_TO_CSV=/app/external-system-data
   postgres:
