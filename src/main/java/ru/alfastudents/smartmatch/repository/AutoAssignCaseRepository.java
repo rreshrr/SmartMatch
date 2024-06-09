@@ -16,4 +16,7 @@ public interface AutoAssignCaseRepository extends JpaRepository<AutoAssignCase, 
     List<String> findClientIdByManagerIdAndCreatedAtToday(@Param("managerId") String managerId);
 
     List<AutoAssignCase> findByManagerId(String managerId);
+
+    @Query("SELECT count(*) FROM AutoAssignCase c WHERE c.managerId=:managerId AND FUNCTION('DATE', c.createdAt)=current_date AND c.errorInfo=''")
+    Integer countSuccesfullByManagerIdAndCreatedAtToday(@Param("managerId") String managerId);
 }

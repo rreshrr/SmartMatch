@@ -1,16 +1,21 @@
-package ru.alfastudents.smartmatch.helper;
+package ru.alfastudents.smartmatch.integration.service.simulator;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import ru.alfastudents.smartmatch.dto.Manager;
+import ru.alfastudents.smartmatch.integration.model.Manager;
+import ru.alfastudents.smartmatch.integration.service.SapService;
+
 import java.util.Scanner;
 
 @Service
-public class SapHelper extends BaseHelper {
+public class SapSimulator extends BaseSimulator implements SapService {
 
     @Value("${app.path-to-csv}/sap_managers.csv")
-    private String defaultFilePath;
+    private void setAbsoluteFilePath(String absoluteFilePath){
+        this.absoluteFilePath = absoluteFilePath;
+    }
 
+    @Override
     public void updateManager(Manager manager){
         String[] values = getAdditionalManagerInfo(manager.getId());
         manager.setIsVacation(Boolean.valueOf(values[1]));
@@ -31,14 +36,4 @@ public class SapHelper extends BaseHelper {
         scanner.close();
         return result;
     }
-
-    @Override
-    protected Scanner getScannerWithCsvContent() {
-        if (resourceFilePath == null){
-            return getScannerFromFileCsv(defaultFilePath);
-        } else {
-            return getScannerFromResourceFileCsv(resourceFilePath);
-        }
-    }
-
 }

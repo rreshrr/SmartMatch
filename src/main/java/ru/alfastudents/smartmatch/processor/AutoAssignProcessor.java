@@ -4,13 +4,18 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
-import ru.alfastudents.smartmatch.dto.Client;
-import ru.alfastudents.smartmatch.dto.Manager;
+import ru.alfastudents.smartmatch.integration.model.Client;
+import ru.alfastudents.smartmatch.integration.model.Manager;
 import ru.alfastudents.smartmatch.service.AutoAssignService;
+
 import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
+
 
 @RequiredArgsConstructor
 @Component
@@ -18,6 +23,8 @@ public class AutoAssignProcessor {
 
     @Autowired
     private final AutoAssignService autoAssignService;
+
+    private final ConcurrentHashMap<String, Lock> managerLocks = new ConcurrentHashMap<>();
 
     @Scheduled(cron = "0 0 21 * * *") // Каждый день в 21:00
     public void process() {
@@ -30,7 +37,13 @@ public class AutoAssignProcessor {
 
         // Обрабатываем каждого клиента в отдельном потоке
         for (Client client : clients) {
-            executorService.submit(() -> processClient(client));
+            executorService.submit(() -> {
+                try {
+                    processClient(client);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+            });
         }
 
         // Завершаем работу ExecutorService
@@ -51,7 +64,8 @@ public class AutoAssignProcessor {
         System.out.println("Notification sended");
     }
 
-    private void processClient(Client client) {
+    private void processClient(Client client) throws InterruptedException {
+        System.out.println(Thread.currentThread() + ": client "+ client.getId() + " started by ");
         int penalty = 0;
         int minLoad = 0;
         Manager targetManager = null;
@@ -88,36 +102,51 @@ public class AutoAssignProcessor {
                 continue;
             }
 
-            // Находим подходящего менеджера
-            if (targetManager == null) {
-                targetManager = manager;
-                if (client.isOrdinary() && manager.isMajor()) {
-                    penalty = 1;
-                }
-                minLoad = manager.getClientCount();
-            } else {
-                if (penalty != 0 && autoAssignService.isSameGrade(manager, client)) {
-                    targetManager = manager;
-                    penalty = 0;
-                    minLoad = manager.getClientCount();
-                    continue;
-                }
+            // Далее необходимо блокировать менеджера для получения верной информации о его нагрузке
+            Lock managerLock = managerLocks.computeIfAbsent(manager.getId(), k -> new ReentrantLock());
 
-                // Выбираем менеджера, если он имеет меньше клиентов
-                if (manager.getClientCount() < minLoad) {
-                    targetManager = manager;
-                    minLoad = manager.getClientCount();
+            if (managerLock.tryLock(50, TimeUnit.MILLISECONDS)) { //если в теч. 50 мс не получили лок, то пропускаем менеджера - для избежания взаимных блокировок
+                try {
+                    if (targetManager == null) {
+                        targetManager = manager;
+                        if (client.isOrdinary() && manager.isMajor()) {
+                            penalty = 1;
+                        }
+                        minLoad = autoAssignService.getManagerActualClientCount(manager);
+                    } else {
+                        if (penalty != 0 && autoAssignService.isSameGrade(manager, client)) {
+                            managerLocks.get(targetManager.getId()).unlock();                   //когда нашли менеджера подходящего больше, чем targetManager, то снимаем лок с targetManager
+                            targetManager = manager;
+                            penalty = 0;
+                            minLoad = autoAssignService.getManagerActualClientCount(manager);
+                            continue;
+                        }
+
+                        // Выбираем менеджера, если он имеет меньше клиентов
+                        if (autoAssignService.getManagerActualClientCount(manager) < minLoad) {
+                            managerLocks.get(targetManager.getId()).unlock();                   //когда нашли менеджера подходящего больше, чем targetManager, то снимаем лок с targetManager
+                            targetManager = manager;
+                            minLoad = autoAssignService.getManagerActualClientCount(manager);
+                        }
+                    }
+                } finally {
+                    if (targetManager != manager) {
+                        managerLock.unlock();
+                    }
                 }
             }
+
         }
 
         // Назначаем клиента менеджеру
         if (targetManager != null) {
             autoAssignService.assignClientToManager(client, targetManager);
+            managerLocks.get(targetManager.getId()).unlock();
         } else if (headManager != null) {
             autoAssignService.assignClientToManager(client, headManager);
         } else {
             autoAssignService.fixErrorOnAssignProcess(client, "Нет менеджеров");
         }
+
     }
 }

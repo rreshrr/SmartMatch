@@ -1,19 +1,24 @@
-package ru.alfastudents.smartmatch.helper;
+package ru.alfastudents.smartmatch.integration.service.simulator;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import ru.alfastudents.smartmatch.dto.Client;
+import ru.alfastudents.smartmatch.integration.model.Client;
+import ru.alfastudents.smartmatch.integration.service.DwhService;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
 @Service
-public class DwhHelper extends BaseHelper {
+public class DwhSimulator extends BaseSimulator implements DwhService {
 
     @Value("${app.path-to-csv}/dwh_clients.csv")
-    private String defaultFilePath;
+    private void setAbsoluteFilePath(String absoluteFilePath){
+        this.absoluteFilePath = absoluteFilePath;
+    }
 
-    public List<Client> getClientsForAutoAsignee() {
+    @Override
+    public List<Client> getClientsForAutoAsign() {
 
         List<Client> clients = new ArrayList<>();
 
@@ -30,14 +35,5 @@ public class DwhHelper extends BaseHelper {
     private Client getClientFromLine(String line) {
         String[] values = line.split(COMMA_DELIMITER);
         return new Client(values[0], values[1], values[2], values[3], values[4]);
-    }
-
-    @Override
-    protected Scanner getScannerWithCsvContent() {
-        if (resourceFilePath == null){
-            return getScannerFromFileCsv(defaultFilePath);
-        } else {
-            return getScannerFromResourceFileCsv(resourceFilePath);
-        }
     }
 }

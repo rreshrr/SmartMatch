@@ -1,4 +1,4 @@
-package ru.alfastudents.smartmatch.helper;
+package ru.alfastudents.smartmatch.integration.service.simulator;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -10,11 +10,14 @@ import java.io.BufferedInputStream;
 import java.io.InputStream;
 import java.util.Scanner;
 
-public abstract class BaseHelper {
+public abstract class BaseSimulator {
 
     @Setter
     @Getter
     protected String resourceFilePath = null;
+
+    @Getter
+    protected String absoluteFilePath = null;
 
     @Value("${app.comma-delimiter}")
     protected String COMMA_DELIMITER;
@@ -46,5 +49,11 @@ public abstract class BaseHelper {
         }
     }
 
-    protected abstract Scanner getScannerWithCsvContent();
+    public Scanner getScannerWithCsvContent(){
+        if (resourceFilePath == null){
+            return getScannerFromFileCsv(absoluteFilePath);
+        } else {
+            return getScannerFromResourceFileCsv(resourceFilePath);
+        }
+    }
 }

@@ -9,8 +9,8 @@ import jakarta.persistence.GenerationType;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
-import ru.alfastudents.smartmatch.dto.Client;
-import ru.alfastudents.smartmatch.dto.Manager;
+import ru.alfastudents.smartmatch.integration.model.Client;
+import ru.alfastudents.smartmatch.integration.model.Manager;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -18,7 +18,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @Entity
 @Getter
-@Table(name="autoassignecases", schema = "smartmatch")
+@Table(name="autoassign_cases", schema = "smartmatch")
 public class AutoAssignCase {
 
     @Id
@@ -66,7 +66,5 @@ public class AutoAssignCase {
             managerId = manager.getId();
             managerName = manager.getName();
         }
-        this.clientId = clientId;
-        this.managerId = managerId;
     }
 }

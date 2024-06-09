@@ -1,18 +1,23 @@
-package ru.alfastudents.smartmatch.helper;
+package ru.alfastudents.smartmatch.integration.service.simulator;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import ru.alfastudents.smartmatch.dto.Manager;
+import ru.alfastudents.smartmatch.integration.model.Manager;
+import ru.alfastudents.smartmatch.integration.service.MdmService;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
 @Service
-public class MdmHelper extends BaseHelper {
+public class MdmSimulator extends BaseSimulator implements MdmService {
 
     @Value("${app.path-to-csv}/mdm_managers.csv")
-    private String defaultFilePath;
+    private void setAbsoluteFilePath(String absoluteFilePath){
+        this.absoluteFilePath = absoluteFilePath;
+    }
 
+    @Override
     public List<Manager> findManagersByRegionAndType(String region, String type) {
         List<Manager> managers = new ArrayList<>();
 
@@ -27,6 +32,7 @@ public class MdmHelper extends BaseHelper {
         return managers;
     }
 
+    @Override
     public List<Manager> findManagersByIds(List<String> ids){
         List<Manager> managers = new ArrayList<>();
 
@@ -45,14 +51,5 @@ public class MdmHelper extends BaseHelper {
     private Manager getManagerFromLine(String line) {
         String[] values = line.split(COMMA_DELIMITER);
         return new Manager(values[0], values[1],  values[2], values[3], Boolean.valueOf(values[4]), Integer.valueOf(values[5]), values[6], values[7]);
-    }
-
-    @Override
-    protected Scanner getScannerWithCsvContent() {
-        if (resourceFilePath == null){
-            return getScannerFromFileCsv(defaultFilePath);
-        } else {
-            return getScannerFromResourceFileCsv(resourceFilePath);
-        }
     }
 }

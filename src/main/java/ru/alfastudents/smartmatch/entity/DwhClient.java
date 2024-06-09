@@ -9,7 +9,7 @@ import jakarta.persistence.GenerationType;
 import java.util.UUID;
 
 @Entity
-@Table(name = "clients", schema = "smartmatch")
+@Table(name = "dwh_clients", schema = "smartmatch")
 public class DwhClient {
 
     @Id

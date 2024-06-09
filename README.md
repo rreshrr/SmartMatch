@@ -65,7 +65,7 @@ docker compose up
 ```shell
 smartmatch  | ... : Completed initialization in 2ms
 ```
-5. Запустить сам процесс - перейти в браузере по ссылке http://localhost:8085/autoassign/start. Если вывелось "AutoAssignProcess finished", то все ок.
+5. Запустить сам процесс - перейти в браузере по ссылке http://localhost:8080/autoassign/start. Если вывелось "AutoAssignProcess finished", то все ок.
 
 ## II. Через клонирование
 1. Клонировать проект
@@ -74,7 +74,7 @@ smartmatch  | ... : Completed initialization in 2ms
 4. Запустить дашборд (см. [инструкцию](frontend/README.md))
 
 # Полезные ссылки
-- http://localhost:8085/autoassign - получить JSON со всеми закреплениями из локальной БД.
-- http://localhost:8085/autoassign/clear - очистить локальную БД с результатами закреплений.
-- http://localhost:8085/autoassign/start - запустить процесс, если не хотитеждать 21:00.
+- http://localhost:8080/autoassign - получить JSON со всеми закреплениями из локальной БД.
+- http://localhost:8080/autoassign/clear - очистить локальную БД с результатами закреплений.
+- http://localhost:8080/autoassign/start - запустить процесс, если не хотитеждать 21:00.
 - http://localhost:5000 - дашборд с результатами

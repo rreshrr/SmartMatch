@@ -3,12 +3,12 @@ package ru.alfastudents.smartmatch.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import ru.alfastudents.smartmatch.dto.Client;
-import ru.alfastudents.smartmatch.dto.Manager;
+import ru.alfastudents.smartmatch.integration.model.Client;
+import ru.alfastudents.smartmatch.integration.model.Manager;
 import ru.alfastudents.smartmatch.entity.AutoAssignCase;
-import ru.alfastudents.smartmatch.helper.DwhHelper;
-import ru.alfastudents.smartmatch.helper.MdmHelper;
-import ru.alfastudents.smartmatch.helper.SapHelper;
+import ru.alfastudents.smartmatch.integration.service.simulator.DwhSimulator;
+import ru.alfastudents.smartmatch.integration.service.simulator.MdmSimulator;
+import ru.alfastudents.smartmatch.integration.service.simulator.SapSimulator;
 import ru.alfastudents.smartmatch.repository.AutoAssignCaseRepository;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
@@ -18,14 +18,15 @@ import java.util.concurrent.TimeUnit;
 @RequiredArgsConstructor
 @Service
 public class AutoAssignService {
-    @Autowired
-    private final DwhHelper dwhHelper;
 
     @Autowired
-    private final MdmHelper mdmHelper;
+    private final DwhSimulator dwhService;
 
     @Autowired
-    private final SapHelper sapHelper;
+    private final MdmSimulator mdmService;
+
+    @Autowired
+    private final SapSimulator sapService;
 
     @Autowired
     private final AutoAssignCaseRepository autoAssignCaseRepository;
@@ -35,20 +36,21 @@ public class AutoAssignService {
 
     public List<Client> getClientsForAssignFromDwh(){
         //симулируем обращение к DWH за клиентами
-        return dwhHelper.getClientsForAutoAsignee();
+        return dwhService.getClientsForAutoAsign();
     }
 
     public void updateManagerFromSap(Manager manager){
         //симулируем обращение к SAP за активностью менеджера
-        sapHelper.updateManager(manager);
+        sapService.updateManager(manager);
     }
 
     public List<Manager> getManagersForAssignByRegionAndTypeFromMdm(String region, String type){
         //симулируем обращение к MDM за менеджерами по региону и типу клиента
-        return mdmHelper.findManagersByRegionAndType(region, type);
+        return mdmService.findManagersByRegionAndType(region, type);
     }
 
     public void assignClientToManager(Client client, Manager manager){
+        System.out.println("Assign client " + client.getId() + " for manager " + manager.getId());
         AutoAssignCase autoAssignCase = new AutoAssignCase(client, manager);
         autoAssignCaseRepository.save(autoAssignCase);
         //здесь также должна быть отправка в MDM уведомления о созданной связи
@@ -72,11 +74,11 @@ public class AutoAssignService {
     }
 
     private Boolean isStringNullOrEmpty(String str){
-        return (str == null) || str.equals("-");
+        return (str == null) || str.equals("-");        //"-" для простоты парсинга файла CSV. надо убрать
     }
 
     public void sendEmailNotifications(){
-        List<Manager> managers = mdmHelper.findManagersByIds(autoAssignCaseRepository.findManagerIdByCreatedAtToday());
+        List<Manager> managers = mdmService.findManagersByIds(autoAssignCaseRepository.findManagerIdByCreatedAtToday());
 
         ExecutorService executorService = Executors.newFixedThreadPool(10);
 
@@ -105,5 +107,10 @@ public class AutoAssignService {
 
     public Boolean isSameGrade(Manager manager, Client client){
         return manager.getGrade().equalsIgnoreCase(client.getGrade());
+    }
+
+    public int getManagerActualClientCount(Manager manager){
+        int actualClientCount = manager.getClientCount();
+        return actualClientCount + autoAssignCaseRepository.countSuccesfullByManagerIdAndCreatedAtToday(manager.getId());
     }
 }

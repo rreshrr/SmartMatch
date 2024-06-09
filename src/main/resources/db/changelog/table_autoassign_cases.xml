@@ -5,7 +5,7 @@
 		https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.9.xsd">
 
     <changeSet id="Create table for autoassign cases" author="Oskin Andrey">
-        <createTable tableName="autoassignecases" schemaName="smartmatch">
+        <createTable tableName="autoassign_cases" schemaName="smartmatch">
             <column name="id" type="uuid">
                 <constraints primaryKey="true" primaryKeyName="id_autoassignecases_pk"/>
             </column>
