@@ -4,7 +4,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import ru.alfastudents.smartmatch.integration.model.Manager;
 import ru.alfastudents.smartmatch.integration.service.MdmService;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;

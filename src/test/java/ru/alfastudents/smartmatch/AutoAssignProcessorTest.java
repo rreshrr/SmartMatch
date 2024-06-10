@@ -1,12 +1,9 @@
 package ru.alfastudents.smartmatch;
 
-
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.TestMethodOrder;
 import org.junit.jupiter.api.MethodOrderer;
-import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -35,11 +32,6 @@ class AutoAssignProcessorTest {
 
     @Autowired
     private AutoAssignProcessor autoAssignProcessor;
-
-    @BeforeEach
-    public void setUp(){
-        MockitoAnnotations.openMocks(this);
-    }
 
     @Order(1)
     @Test
@@ -370,7 +362,7 @@ class AutoAssignProcessorTest {
                         30, "Ordinary", "vasilev.v03@mail.ru")
         );
 
-        Map<String, Integer> managerLoading = new HashMap<>();
+        Map<String, Integer> managerLoading = Collections.synchronizedMap(new HashMap<>());
         managerLoading.put("RUMATI", 0);
         managerLoading.put("RUMATY", 0);
         managerLoading.put("RUMATD", 0);
@@ -393,9 +385,7 @@ class AutoAssignProcessorTest {
             return managerArg.getClientCount() + managerLoading.get(managerArg.getId());
         });
         doAnswer(invocationOnMock -> {
-            Client clientArg = invocationOnMock.getArgument(0);
             Manager managerArg = invocationOnMock.getArgument(1);
-            System.out.println("assign cl " + clientArg.getId() + " on " + managerArg.getId());
             managerLoading.merge(managerArg.getId(), 1, Integer::sum);
             return null;
         }).when(autoAssignService).assignClientToManager(any(Client.class), any(Manager.class));

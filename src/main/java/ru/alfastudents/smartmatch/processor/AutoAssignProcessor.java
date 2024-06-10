@@ -7,7 +7,6 @@ import org.springframework.stereotype.Component;
 import ru.alfastudents.smartmatch.integration.model.Client;
 import ru.alfastudents.smartmatch.integration.model.Manager;
 import ru.alfastudents.smartmatch.service.AutoAssignService;
-
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;

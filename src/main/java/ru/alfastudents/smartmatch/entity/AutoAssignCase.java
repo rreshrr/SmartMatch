@@ -38,7 +38,7 @@ public class AutoAssignCase {
     private String clientName;
 
     @Column(name = "client_type", nullable = true, updatable = false)
-    private String clentType;
+    private String clientType;
 
     @Column(name = "manager_name", nullable = true, updatable = false)
     private String managerName;
@@ -58,7 +58,7 @@ public class AutoAssignCase {
     public AutoAssignCase(Client client, Manager manager) {
         if (client != null){
             clientId = client.getId();
-            clentType = client.getType();
+            clientType = client.getType();
             clientName = client.getName();
             clientRegion = client.getRegion();
         }

@@ -6,9 +6,9 @@ import org.springframework.stereotype.Service;
 import ru.alfastudents.smartmatch.integration.model.Client;
 import ru.alfastudents.smartmatch.integration.model.Manager;
 import ru.alfastudents.smartmatch.entity.AutoAssignCase;
-import ru.alfastudents.smartmatch.integration.service.simulator.DwhSimulator;
-import ru.alfastudents.smartmatch.integration.service.simulator.MdmSimulator;
-import ru.alfastudents.smartmatch.integration.service.simulator.SapSimulator;
+import ru.alfastudents.smartmatch.integration.service.DwhService;
+import ru.alfastudents.smartmatch.integration.service.MdmService;
+import ru.alfastudents.smartmatch.integration.service.SapService;
 import ru.alfastudents.smartmatch.repository.AutoAssignCaseRepository;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
@@ -20,13 +20,13 @@ import java.util.concurrent.TimeUnit;
 public class AutoAssignService {
 
     @Autowired
-    private final DwhSimulator dwhService;
+    private final DwhService dwhService;
 
     @Autowired
-    private final MdmSimulator mdmService;
+    private final MdmService mdmService;
 
     @Autowired
-    private final SapSimulator sapService;
+    private final SapService sapService;
 
     @Autowired
     private final AutoAssignCaseRepository autoAssignCaseRepository;
@@ -50,7 +50,6 @@ public class AutoAssignService {
     }
 
     public void assignClientToManager(Client client, Manager manager){
-        System.out.println("Assign client " + client.getId() + " for manager " + manager.getId());
         AutoAssignCase autoAssignCase = new AutoAssignCase(client, manager);
         autoAssignCaseRepository.save(autoAssignCase);
         //здесь также должна быть отправка в MDM уведомления о созданной связи
