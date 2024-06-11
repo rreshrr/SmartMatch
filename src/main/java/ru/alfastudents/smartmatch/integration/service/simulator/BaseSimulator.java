@@ -1,7 +1,6 @@
 package ru.alfastudents.smartmatch.integration.service.simulator;
 
 import lombok.Getter;
-import lombok.Setter;
 import org.springframework.beans.factory.annotation.Value;
 import java.io.FileNotFoundException;
 import java.io.FileInputStream;
@@ -12,12 +11,8 @@ import java.util.Scanner;
 
 public abstract class BaseSimulator {
 
-    @Setter
     @Getter
-    protected String resourceFilePath = null;
-
-    @Getter
-    protected String absoluteFilePath = null;
+    protected String filePath = null;
 
     @Value("${app.comma-delimiter}")
     protected String COMMA_DELIMITER;
@@ -41,7 +36,7 @@ public abstract class BaseSimulator {
     protected Scanner getScannerFromResourceFileCsv(String resourceFilePath) {
         try {InputStream inputStream = getClass().getResourceAsStream(resourceFilePath);
             if (inputStream == null) {
-                throw new IllegalArgumentException("File not found: " + resourceFilePath);
+                throw new IllegalArgumentException("Файл не найден: " + resourceFilePath);
             }
             return new Scanner(inputStream);
         } catch (Exception e){
@@ -50,10 +45,17 @@ public abstract class BaseSimulator {
     }
 
     public Scanner getScannerWithCsvContent(){
-        if (resourceFilePath == null){
-            return getScannerFromFileCsv(absoluteFilePath);
+        if (hasExactlyOneSlash(filePath)){
+            return getScannerFromResourceFileCsv(filePath);
         } else {
-            return getScannerFromResourceFileCsv(resourceFilePath);
+            return getScannerFromFileCsv(filePath);
         }
     }
+
+    private boolean hasExactlyOneSlash(String k) {
+        // Подсчет количества вхождений символа '/'
+        int count = k.length() - k.replace("/", "").length();
+        return count == 1;
+    }
+
 }

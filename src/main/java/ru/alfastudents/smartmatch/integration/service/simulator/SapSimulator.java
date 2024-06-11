@@ -10,8 +10,8 @@ import java.util.Scanner;
 public class SapSimulator extends BaseSimulator implements SapService {
 
     @Value("${app.path-to-csv}/sap_managers.csv")
-    private void setAbsoluteFilePath(String absoluteFilePath){
-        this.absoluteFilePath = absoluteFilePath;
+    private void setFilePath(String absoluteFilePath){
+        this.filePath = absoluteFilePath;
     }
 
     @Override

@@ -12,8 +12,8 @@ import java.util.Scanner;
 public class DwhSimulator extends BaseSimulator implements DwhService {
 
     @Value("${app.path-to-csv}/dwh_clients.csv")
-    private void setAbsoluteFilePath(String absoluteFilePath){
-        this.absoluteFilePath = absoluteFilePath;
+    private void setFilePath(String absoluteFilePath){
+        this.filePath = absoluteFilePath;
     }
 
     @Override

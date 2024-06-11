@@ -12,8 +12,8 @@ import java.util.Scanner;
 public class MdmSimulator extends BaseSimulator implements MdmService {
 
     @Value("${app.path-to-csv}/mdm_managers.csv")
-    private void setAbsoluteFilePath(String absoluteFilePath){
-        this.absoluteFilePath = absoluteFilePath;
+    private void setFilePath(String absoluteFilePath){
+        this.filePath = absoluteFilePath;
     }
 
     @Override
