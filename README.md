@@ -84,3 +84,6 @@ smartmatch  | ... : Started SmartMatchApplication ...
 - http://localhost:8080/autoassign/clear - очистить локальную БД с результатами закреплений.
 - http://localhost:8080/autoassign/start - запустить процесс, если не хотитеждать 21:00.
 - http://localhost:5000 - дашборд с результатами
+
+# Автосборка
+К репозиторию прикручена автосборка (`.github/workflows/build.yml`), запускающаяся на каждый пуш в мастер-ветку.

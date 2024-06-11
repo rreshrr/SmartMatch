@@ -25,7 +25,7 @@ import static org.mockito.Mockito.argThat;
 
 @SpringBootTest
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-class AutoAssignProcessorTest {
+class AutoAssignProcessorTest extends BaseTest {
 
     @MockBean
     private AutoAssignService autoAssignService;
